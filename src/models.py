@@ -16,12 +16,12 @@ class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
-    favorites_character: Mapped["Character"] = relationship(
+    favorites_characters: Mapped["Character"] = relationship(
         "Character",
         secondary=favorites_table,
         back_populates="favorited_by"
     )
-    favorites_location: Mapped["Location"] = relationship(
+    favorites_locations: Mapped["Location"] = relationship(
         "Location",
         secondary=favorites_table,
         back_populates="favorited_by"
@@ -44,7 +44,7 @@ class Character(db.Model):
     favorited_by: Mapped[list[User]] = relationship(
         "User",
         secondary=favorites_table,
-        back_populates="favorites_character"
+        back_populates="favorites_characters"
     )
 
     def serialize(self):
@@ -65,7 +65,7 @@ class Location(db.Model):
     favorited_by: Mapped[list[User]] = relationship(
         "User",
         secondary=favorites_table,
-        back_populates="favorites_location"
+        back_populates="favorites_locations"
     )
 
 
