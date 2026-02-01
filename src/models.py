@@ -4,11 +4,18 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
 
-favorites_table = Table(
-    "favorites",
+favorites_character_table = Table(
+    "favorites_character",
     db.Model.metadata,
     Column("user_id", ForeignKey("user.id"), primary_key=True),
     Column("character_id", ForeignKey("character.id"), primary_key=True),
+    
+)
+
+favorites_location_table = Table(
+    "favorites_location",
+    db.Model.metadata,
+    Column("user_id", ForeignKey("user.id"), primary_key=True),
     Column("location_id", ForeignKey("location.id"), primary_key=True)
 )
 
@@ -18,12 +25,12 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(nullable=False)
     favorites_characters: Mapped["Character"] = relationship(
         "Character",
-        secondary=favorites_table,
+        secondary=favorites_character_table,
         back_populates="favorited_by"
     )
     favorites_locations: Mapped["Location"] = relationship(
         "Location",
-        secondary=favorites_table,
+        secondary=favorites_location_table,
         back_populates="favorited_by"
     )
 
@@ -43,7 +50,7 @@ class Character(db.Model):
     quote: Mapped[str] = mapped_column(String(500), nullable=True)
     favorited_by: Mapped[list[User]] = relationship(
         "User",
-        secondary=favorites_table,
+        secondary=favorites_character_table,
         back_populates="favorites_characters"
     )
 
@@ -64,7 +71,7 @@ class Location(db.Model):
     town: Mapped[str] = mapped_column(String(200), nullable=True)
     favorited_by: Mapped[list[User]] = relationship(
         "User",
-        secondary=favorites_table,
+        secondary=favorites_location_table,
         back_populates="favorites_locations"
     )
 
